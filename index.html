@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        html {
+            --title-height: 25px;
+            --dock-padding: 10px;
+            --window-border-size: 1px;
+            --firefox-header-size: 25px;
+            --window-button-margin: 2px;
+        }
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            background-color: black;
+            background-image: url("media/bg2.webp");
+            background-repeat: no-repeat;
+            /* background-size: 100% 100%; */
+            background-size: cover;
+            display: grid;
+            /* justify-content: center; */
+            /* height: 100%; */
+        }
+        #window1 {
+            position: absolute;
+            background-color: red;
+            height: 100px;
+            width: 300px;
+        }
+        .window {
+            position: absolute;
+            background-color: white;
+            /* height: 100px;
+            width: 300px; */
+            /* border: var(--window-border-size) rgba(0, 0, 0, 0) solid; */
+            height: fit-content;
+            width: fit-content;
+        }
+        .window.focused {
+            outline: var(--window-border-size) white solid;
+        }
+        .titlebar {
+            width: 100%;
+            height: var(--title-height);
+            background-color: blue;
+            display: flex;
+            flex-direction: row;
+            align-items: left;
+            position: sticky;
+            top: 0;
+        }
+        .focused {
+            z-index: 999;
+        }
+        /* .close_button {
+            height: calc(var(--title-height) - var(--window-button-margin) * 2);
+            aspect-ratio: 1/1;
+        }
+        .max_button {
+            height: calc(var(--title-height) - var(--window-button-margin) * 2);
+            aspect-ratio: 1/1;
+        } */
+        .window_button {
+            height: calc(var(--title-height) - var(--window-button-margin) * 2);
+            aspect-ratio: 1/1;
+            margin-right: var(--window-button-margin);
+        }
+        .window_buttons {
+            margin-left: auto;
+            /* margin-right: var(--window-button-margin); */
+            display: flex;
+            align-items: center;
+        }
+        .title_text {
+            margin: 0; 
+            color: white;
+        }
+        .minimized {
+            display: none;
+        }
+        .template_window {
+            justify-self: flex-start;
+            opacity: 0;
+            pointer-events: none;
+            left: 0;
+            top: 0;
+        }
+        #dock {
+            z-index: 1000;
+            background-color: rgba(32, 34, 37, 0.373);
+            height: 60px;
+            /* width: 200px; */
+            bottom: 10px;
+            padding: var(--dock-padding);
+            justify-self: center;
+            position: absolute;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+        .dock_icon {
+            height: calc(100%);
+            /* height: calc(100% - var(--dock-padding)); */
+            aspect-ratio: 1/1;
+        }
+        #dock > .dock_icon:not(:last-child) {
+            margin-right: var(--dock-padding)
+        }
+        .discord {
+            /* background-image: url("https://picsum.photos/200"); */
+            background-repeat: no-repeat;
+            background-size: cover;
+            /* height: fit-content;
+            width: fit-content; */
+            /* resize: both;
+            overflow: auto; */
+        }
+        .window_content {
+            height: 100px;
+            width: 300px;
+            top: var(--title-height);
+            resize: both;
+            overflow: auto;
+        }
+        /* .discord > .window_content {
+            height: 1080px;
+            width: 1920px;
+        } */
+        .iframe > .window_content {
+            overflow: hidden;
+        }
+        .firefox > .window_content {
+            overflow: hidden;
+        }
+        .firefox > .window_content > .headerbar {
+            display: grid;
+            grid-template-columns: 10fr 1fr;
+            gap: 0px;
+            height: var(--firefox-header-size)
+        }
+        .firefox > .window_content > iframe{
+            /* grid-column: 1 / span 2; */
+            height: calc(100% - var(--firefox-header-size));
+            width: 100%;
+        }
+        .firefox_url_bar {
+            width: 10fr;
+            resize: none;
+            padding: 0;
+            margin: 0;
+            border: none;
+            height: 100%;
+            outline: var(--window-border-size) black solid;
+            text-align: middle
+        }
+        /* .firefox_go_button {
+            width: 1fr;
+        } */
+    </style>
+</head>
+<body>
+    <div id="window1" class="window template_window">
+        <div class="titlebar">
+
+        </div>
+    </div>
+    <div id="window2" class="window template_window">
+        <div class="titlebar">
+            <img src="media/osassets/windowsxpx.png" class="close_button">
+            <!-- <p>"itune"</p> -->
+        </div>
+        <div id="test"><p>"music"</p></div>
+    </div>
+    <div id="discord" class="window template_window">
+        <div class="titlebar">
+            <p class="title_text">hii</p>
+            <div class="window_buttons">
+                <img src="media/osassets/windowsxpmax.png" class="window_button max_button"><img src="media/osassets/windowsxpx.png" class="window_button close_button">
+            </div>
+        </div>
+        <div class="window_content">
+            <p>"dicord"</p>
+            <p>"dicord"</p>
+            <p>"dicord"</p>
+            <p>"dicord"</p>
+            <p>"dicord"</p>
+            <p>"dicord"</p>
+            <p>"dicord"</p>
+            <p>"dicord"</p>
+        </div>
+    </div>
+    <!-- <div id="iframe" class="window template_window">
+        <div class="titlebar">
+            <p class="title_text">iframetest</p>
+            <img src="media/osassets/windowsxpx.png" class="close_button">
+        </div>
+        <div class="window_content">
+            <iframe src="https://callie.rest/" style="border:none;" title="callie discord bot" height="100%" width="100%"></iframe> 
+        </div>
+    </div> -->
+    <div id="firefox" class="window template_window">
+        <div class="titlebar">
+            <p class="title_text">firefox nightly</p>
+            <div class="window_buttons">
+                <img src="media/osassets/windowsxpmax.png" class="window_button max_button"><img src="media/osassets/windowsxpx.png" class="window_button close_button">
+            </div>
+        </div>
+        <div class="window_content">
+            <div class="headerbar"><textarea placeholder="Search with Google or enter address" class="firefox_url_bar" onkeydown="firefox_textarea_keydown(event)"></textarea>
+            <button class="firefox_go_button" onclick="firefox_go(this)">go</button></div>
+            <iframe src="https://callie.rest/" style="border:none;" title="callie discord bot" class="firefox_iframe"></iframe> 
+        </div>
+    </div>
+    <div id="dock">
+        <img src="media/spotify.png" class="dock_icon" onclick="open_app('window2')">
+        <img src="media/discord.png" class="dock_icon" onclick="open_app('discord')">
+        <img src="media/firefox.png" class="dock_icon" onclick="open_app('firefox')">
+    </div>
+</body>
+<script>
+
+// var current_window = document.getElementById('window1')
+var current_window
+var current_window_held = false
+var old_window
+var title_cur_pos_x
+var title_cur_pos_y
+const root_styles = getComputedStyle(document.documentElement)
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     const root = document.documentElement;
+//     const titleHeight = root.style.getPropertyValue('--title-height');
+//     console.log(titleHeight);
+// });
+
+function get_parent_window(element) {
+    let process_element = element;
+    while (process_element !== null) { if (process_element.classList.contains('window')) {return process_element; } process_element = process_element.parentElement}
+    return null;
+}
+
+function nonsense_of_length(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+    }
+    return result;
+}
+
+function firefox_go(button) {
+    console.log('pressed!')
+    const parent = button.parentNode;
+
+    const textarea = parent.querySelector('textarea');
+    const iframe = parent.parentNode.querySelector('.firefox_iframe');
+    
+    if (textarea) {
+        var raw_input = textarea.value
+        var url
+
+        // if (raw_input.startsWith("https://") || raw_input.startsWith("http://")) { 
+        if (/^(https?:\/\/)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/[^\s]*)?$/.test(raw_input)) { 
+            if (!raw_input.startsWith("https://") && !raw_input.startsWith("http://")) { url = 'http://'+raw_input } else { url = raw_input }
+        } else {
+            url = 'https://www.dogpile.com/search/web?q='+raw_input.split(' ').join('+')
+        }
+
+        iframe.src = url
+
+    } else { console.error('firefox textarea missing') }
+}
+
+function firefox_textarea_keydown(event) {
+    if (event.keyCode == 13) { 
+        event.preventDefault()
+        firefox_go(event.target)
+    }
+}
+
+function count_windows(id=undefined) {
+    let count = 0;
+
+    if (!id) {
+        const elements = document.querySelectorAll('.window');
+        elements.forEach(element => {
+            if (!element.classList.contains('template_window')) {
+                count++;
+            }
+        });
+    } else {
+        // const elements = document.querySelectorAll(`.${id}`);
+        const elements = document.querySelectorAll('*');
+        elements.forEach(element => {
+            if (element.dataset.processName != id) {} else if 
+            (!element.classList.contains('template_window')) {
+                count++;
+            }
+        });
+    }
+
+    return count;
+}
+
+function close_all_windows() {
+    const elements = document.querySelectorAll('.window');
+
+    elements.forEach(element => {
+        if (!element.classList.contains('template_window')) {
+            element.remove()
+        }
+    });
+
+    var template_windows = document.querySelectorAll("body .template_window");
+
+    template_windows.forEach(element => {
+        element.style.left = '0px'
+        element.style.top = '0px'
+    });
+}
+
+function move_object(event) {
+    // console.log()
+    if (!current_window_held) { return }
+    current_window.style.top = (event.clientY-title_cur_pos_y).toString()+'px'
+    current_window.style.left = (event.clientX-title_cur_pos_x).toString()+'px'
+    // current_window.style.top = ((event.clientY)-10).toString()+'px'
+    // current_window.style.left = ((event.clientX-(current_window.clientWidth+2))+10).toString()+'px'
+    event.preventDefault();
+}
+
+function window_handler(event) {
+    down_target = event.target;
+    // try { old_window = current_window.innerHTML } catch {}
+    // if (current_window) { current_window.classList.remove('focused') }
+    // if (current_window) { current_window.classList.remove('focused') }
+    // current_window.classList.remove('focused')
+    // current_window = event.target.parentElement
+    // current_window.classList.add('focused')
+
+    if (event.type == 'mouseup') {
+        // console.log('up')
+        document.removeEventListener('pointermove', move_object)
+        current_window_held = false
+        return
+    } else {
+        if (down_target.classList.contains("titlebar")) {
+            current_window_held=true
+            document.addEventListener('pointermove', move_object)
+            if (current_window) { current_window.classList.remove('focused') }
+            // console.log(current_window)
+            current_window = event.target.parentElement
+            // console.log(current_window)
+            // if (document.getElementsByClassName('focused').length == 1) { current_window.classList.add('focused') }
+            current_window.classList.add('focused')
+            // document.getElementById('old_window').classList.remove('focused')
+        }
+    }
+}
+
+document.addEventListener('mousedown', window_handler);
+document.addEventListener('mouseup', window_handler);
+
+function close_window(event) {
+    // console.log(event.target.id)
+    var parent_window = get_parent_window(event.target)
+    var process_name = parent_window.dataset.processName
+    parent_window.remove()
+    // console.log(process_name)
+    if (count_windows(process_name) == 0) {
+        var main_process = document.getElementById(process_name)
+        main_process.style.left = '0px'
+        main_process.style.top = '0px'
+    }
+}
+
+function max_window(event) {
+    // console.log(event.target.id)
+    var parent_window = get_parent_window(event.target)
+    var dock = document.getElementById('dock')
+    var title_height = parseInt(root_styles.getPropertyValue('--title-height')) 
+    var process_name = parent_window.dataset.processName
+    var new_window_height = dock.offsetTop - title_height
+    var window_content = parent_window.querySelector('.window_content')
+    window_content.style.height = new_window_height+'px'
+    window_content.style.width = window.innerWidth+'px'
+    parent_window.style.top = 0
+    parent_window.style.left = 0
+}
+
+function register_windows() {
+    for (title of document.getElementsByClassName('titlebar')) {
+        title.addEventListener('mousedown', function(e) {
+            var rect = e.target.getBoundingClientRect();
+            var x = e.clientX - rect.left
+            var y = e.clientY - rect.top 
+            // console.log("Left? : " + x + " ; Top? : " + y + ".");
+            title_cur_pos_x = x
+            title_cur_pos_y = y
+        })
+    }
+
+    const close_buttons = document.querySelectorAll('.close_button');
+    close_buttons.forEach(function(element) {
+        element.addEventListener('click', close_window);
+    });
+    var max_buttons = document.querySelectorAll('.max_button');
+    max_buttons.forEach(function(element) {
+        element.addEventListener('click', max_window);
+    });
+}
+
+function open_app(app_id) {
+    console.log(`opening app: ${app_id}`)
+    var app = document.getElementById(app_id)
+    if (!app) { console.log('no app found'); return null}
+    new_app = app.cloneNode(true)
+    new_app.id = nonsense_of_length(10)
+    new_app.classList.remove('template_window')
+    new_app.classList.add(app_id)
+    new_app.dataset.processName = app_id
+    document.body.appendChild(new_app)
+    move_window_towards_corner(app_id)
+    register_windows()
+}
+register_windows()
+// console.log(get_parent_window(document.getElementById('test')))
+function move_window_towards_corner(app_id) {
+    var app = document.getElementById(app_id)
+    var c_left
+    var c_top
+
+    if (!app.style.left) { c_left = 0 } else { c_left = parseInt(app.style.left) }
+    var new_left = c_left+25
+    if (new_left+app.offsetWidth > window.innerWidth) { new_left = c_left }
+    app.style.left = new_left+'px'
+
+    if (!app.style.top) { c_top = 0 } else { c_top = parseInt(app.style.top) }
+    var new_top = c_top+25
+    if (new_top+app.offsetWidth > window.innerHeight) { new_top = c_top }
+    app.style.top = new_top+'px'
+}
+
+</script>
