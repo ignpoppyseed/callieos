@@ -17,7 +17,7 @@
         }
         body {
             background-color: black;
-            background-image: url("media/bg2.webp");
+            background-image: url("media/osassets/bg/bg2.webp"); 
             background-repeat: no-repeat;
             /* background-size: 100% 100%; */
             background-size: cover;
@@ -166,8 +166,10 @@
         }
         .calculator > .window_content {
             overflow: hidden;
-            height: 777px;
-            width: 392px;
+            min-height: 790px;
+            height: 790px;
+            min-width: 440px;
+            width: 440px;
         }
     </style>
 </head>
@@ -202,15 +204,6 @@
             <p>"dicord"</p>
         </div>
     </div>
-    <!-- <div id="iframe" class="window template_window">
-        <div class="titlebar">
-            <p class="title_text">iframetest</p>
-            <img src="media/osassets/windowsxpx.png" class="close_button">
-        </div>
-        <div class="window_content">
-            <iframe src="https://callie.rest/" style="border:none;" title="callie discord bot" height="100%" width="100%"></iframe> 
-        </div>
-    </div> -->
     <div id="firefox" class="window template_window">
         <div class="titlebar">
             <p class="title_text">firefox nightly</p>
@@ -224,7 +217,7 @@
             <iframe src="https://callie.rest/" style="border:none;" title="callie discord bot" class="firefox_iframe"></iframe> 
         </div>
     </div>
-    <div id="calculator" class="window template_window">
+    <div id="calculator" class="window template_window" data-scaletoiframe="true">
         <div class="titlebar">
             <p class="title_text">calculator</p>
             <div class="window_buttons">
@@ -232,14 +225,14 @@
             </div>
         </div>
         <div class="window_content">
-            <iframe src="media/apps/calc.html" style="border:none;" title="calculator" class="app_container_iframe"></iframe> 
+            <iframe src="media/apps/calc.html" style="border:none;" title="calculator" class="app_container_iframe" id="app_container_iframe"></iframe> 
         </div>
     </div>
     <div id="dock">
-        <img src="media/spotify.png" class="dock_icon" onclick="open_app('window2')">
-        <img src="media/discord.png" class="dock_icon" onclick="open_app('discord')">
-        <img src="media/firefox.png" class="dock_icon" onclick="open_app('firefox')">
-        <img src="media/calculator.png" class="dock_icon" onclick="open_app('calculator')">
+        <img src="media/app_icons/spotify.png" class="dock_icon" onclick="open_app('window2')">
+        <img src="media/app_icons/discord.png" class="dock_icon" onclick="open_app('discord')">
+        <img src="media/app_icons/firefox.png" class="dock_icon" onclick="open_app('firefox')">
+        <img src="media/app_icons/calculator.png" class="dock_icon" onclick="open_app('calculator')">
     </div>
 </body>
 <script>
@@ -438,6 +431,18 @@ function register_windows() {
     });
 }
 
+function scale_to_iframe(app) {
+    var iframe = app.querySelector('#app_container_iframe')
+    console.log(app)
+    console.log(iframe)
+    var cs = getComputedStyle(iframe)
+    console.log(cs.height)
+    console.log(cs.width)
+    console.log(iframe.scrollHeight)
+    console.log(iframe.getBoundingClientRect().height)
+
+}
+
 function open_app(app_id) {
     console.log(`opening app: ${app_id}`)
     var app = document.getElementById(app_id)
@@ -450,6 +455,9 @@ function open_app(app_id) {
     document.body.appendChild(new_app)
     move_window_towards_corner(app_id)
     register_windows()
+    if (new_app.dataset.scaletoiframe.toLowerCase() == 'true') {
+        scale_to_iframe(new_app)
+    }
 }
 register_windows()
 // console.log(get_parent_window(document.getElementById('test')))
