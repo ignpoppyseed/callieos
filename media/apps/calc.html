@@ -1,0 +1,172 @@
+<head>
+    <style>
+        :root {
+            --min-width: none;
+        }
+        html, body {
+            margin: 0;
+        }
+        #calcu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, auto);
+            height: 100%;
+        }
+        input[type="button"] {
+            width: 1fr;
+            height: 1fr;
+            font-size: 4.8rem;
+            border: none;
+            border: black solid 1px;
+            min-width: var(--min-width);
+        }
+          
+        input[type="button"].special_button {
+            font-size: 8rem;
+        }
+
+        input[type="text"] {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            font-size: 4.8rem;
+            cursor: none;
+            caret-color: transparent;
+        }
+        .result_container {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            font-size: 4.8rem;
+            display: flex;
+            overflow: hidden;
+            border: none;
+            border: black solid 1px;
+        }
+        /* .result_container > * {
+            flex-shrink: 1;
+        } */
+        #result {
+            margin: 0;
+            align-self: center;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus,
+        button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<div class="window_content">
+    <div id="calcu">
+            <!-- <input type="text" id="result"> -->
+            <div class="result_container" id="result_container"><p id="result"></p></div>
+            <input type="button" value="c" onclick="calc_callback(this.value)" class="special_button" id="clear_button">
+        
+            <input type="button" value="1" onclick="calc_callback(this.value)">
+            <input type="button" value="2" onclick="calc_callback(this.value)">
+            <input type="button" value="3" onclick="calc_callback(this.value)">
+            <input type="button" value="/" onclick="calc_callback(this.value)" class="special_button">
+
+            <input type="button" value="4" onclick="calc_callback(this.value)">
+            <input type="button" value="5" onclick="calc_callback(this.value)">
+            <input type="button" value="6" onclick="calc_callback(this.value)">
+            <input type="button" value="*" onclick="calc_callback(this.value)" class="special_button">
+
+            <input type="button" value="7" onclick="calc_callback(this.value)">
+            <input type="button" value="8" onclick="calc_callback(this.value)">
+            <input type="button" value="9" onclick="calc_callback(this.value)">
+            <input type="button" value="-" onclick="calc_callback(this.value)" class="special_button">
+
+            <input type="button" value="0" onclick="calc_callback(this.value)">
+            <input type="button" value="." onclick="calc_callback(this.value)" class="special_button">
+            <input type="button" value="=" onclick="calc_callback(this.value)" class="special_button" id="minsizeel">
+            <input type="button" value="+" onclick="calc_callback(this.value)" class="special_button">
+    </div>
+</div>
+<script>
+    var text_area = document.getElementById('result')
+    const default_text_area_font_size = getComputedStyle(text_area).fontSize
+    // var i = 0
+    function shrink_text_if_big() {
+        var text_area_s = getComputedStyle(text_area)
+        // console.log('running shrink func')
+        if (parseFloat(text_area_s.width) > get_max_width()) {
+            // i++
+            // console.log(`shrinking. ran ${i} times`)
+            text_area.style.fontSize = (parseFloat(text_area_s.fontSize) - 1)+'px'
+            shrink_text_if_big()
+        } else { return }
+    }
+    function eval_error() {
+        text_area.innerText = 'eval error!'
+        text_area.style.fontSize = default_text_area_font_size
+    }
+    function calc_callback(event) {
+        try { event.preventDefault() } catch {}
+        var key
+        if (event.type) { key = event.key }
+        else { key = event }
+        key = String(key)
+        if (key.toLowerCase() == 'c' || key.toLowerCase() == 'a/c') {
+            text_area.innerText = ''
+            text_area.style.fontSize = default_text_area_font_size
+        } else if (key.toLowerCase() == '=') {
+            try {
+                var evaled = eval(text_area.innerText)
+                if (evaled) {
+                    text_area.innerText = evaled
+                } else {
+                    eval_error()
+                }
+            } catch {
+                eval_error()
+            }
+        } else if (!/^[0-9()+\-*.\/]*$/.test(key)) { return } else {
+            if (text_area.innerText == 'eval error!') { text_area.innerText = key } else { text_area.innerText += key; shrink_text_if_big() }
+        }
+
+        // if (/^([-+]? ?(\d+|\(\g<1>\))( ?[-+*\/] ?\g<1>)?)$/.test(key)) {}
+    }
+    document.addEventListener("keydown", calc_callback);
+
+    function test() {
+    // var clear_button = document.getElementById('clear_button')
+    // var result_text = document.getElementById('result')
+    // var clear_button_s = getComputedStyle(clear_button)
+    // var result_text_s = getComputedStyle(result_text)
+    // console.log(clear_button_s.width)
+    // console.log(result_text_s.width)
+    // var max_width = parseFloat(window.innerWidth) - parseFloat(clear_button_s.width)
+    // console.log(max_width)
+    var container = document.getElementById('result_container')
+    var text = document.getElementById('result')
+    var container_s = getComputedStyle(container)
+    var text_s = getComputedStyle(text)
+    console.log(container_s.width)
+    console.log(text_s.width)
+    var max_width = container_s.width
+    console.log(max_width)
+    }
+    function get_max_width() {
+        return parseFloat( getComputedStyle( document.getElementById( 'result_container' ) ).width )
+    }
+    // onDOMContentLoaded = (event) => {
+    //     getComputedStyle(document.documentElement).setProperty('--min-width', getComputedStyle(document.getElementById('minsizeel')).width)
+    // };
+    document.documentElement.style.setProperty('--min-width', find_min_button_size())
+
+    function find_min_button_size() {
+        // Create a <p> element
+        // const p_element = document.createElement('p');
+        const p_element = document.createElement('button');
+        p_element.style.fontSize = '8rem';
+        p_element.style.visibility = 'hidden';
+        p_element.style.position = 'absolute';
+        p_element.textContent = '=';
+        document.body.appendChild(p_element);
+        const width = p_element.offsetWidth;
+        document.body.removeChild(p_element);
+        return width
+    }
+
+</script>

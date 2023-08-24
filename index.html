@@ -159,9 +159,16 @@
             outline: var(--window-border-size) black solid;
             text-align: middle
         }
-        /* .firefox_go_button {
-            width: 1fr;
-        } */
+        .calculator > .window_content > iframe{
+            /* grid-column: 1 / span 2; */
+            height: calc(100%);
+            width: 100%;
+        }
+        .calculator > .window_content {
+            overflow: hidden;
+            height: 777px;
+            width: 392px;
+        }
     </style>
 </head>
 <body>
@@ -217,10 +224,22 @@
             <iframe src="https://callie.rest/" style="border:none;" title="callie discord bot" class="firefox_iframe"></iframe> 
         </div>
     </div>
+    <div id="calculator" class="window template_window">
+        <div class="titlebar">
+            <p class="title_text">calculator</p>
+            <div class="window_buttons">
+                <img src="media/osassets/windowsxpmax.png" class="window_button max_button"><img src="media/osassets/windowsxpx.png" class="window_button close_button">
+            </div>
+        </div>
+        <div class="window_content">
+            <iframe src="media/apps/calc.html" style="border:none;" title="calculator" class="app_container_iframe"></iframe> 
+        </div>
+    </div>
     <div id="dock">
         <img src="media/spotify.png" class="dock_icon" onclick="open_app('window2')">
         <img src="media/discord.png" class="dock_icon" onclick="open_app('discord')">
         <img src="media/firefox.png" class="dock_icon" onclick="open_app('firefox')">
+        <img src="media/calculator.png" class="dock_icon" onclick="open_app('calculator')">
     </div>
 </body>
 <script>
@@ -270,7 +289,7 @@ function firefox_go(button) {
 
         // if (raw_input.startsWith("https://") || raw_input.startsWith("http://")) { 
         if (/^(https?:\/\/)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/[^\s]*)?$/.test(raw_input)) { 
-            if (!raw_input.startsWith("https://") && !raw_input.startsWith("http://")) { url = 'http://'+raw_input } else { url = raw_input }
+            if (!raw_input.startsWith("https://") && !raw_input.startsWith("http://")) { url = 'https://'+raw_input } else { url = raw_input }
         } else {
             url = 'https://www.dogpile.com/search/web?q='+raw_input.split(' ').join('+')
         }
